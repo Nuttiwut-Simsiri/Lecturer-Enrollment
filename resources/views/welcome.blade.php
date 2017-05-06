@@ -15,14 +15,9 @@
 
     </head>
     <body>
-      @if (Session::has('message'))
-      <div class="alert alert-success alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>  ..{{ Session::get('message') }}..</strong>
-        </div>
-      @endif
       @if (count($errors) > 0)
-           <div class = "alert alert-danger">
+           <div class = "alert alert-danger alert-dismissable">
+             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
               <ul>
                  @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -30,6 +25,12 @@
               </ul>
            </div>
         @endif
+      @if (Session::has('message'))
+      <div class="alert alert-success alert-dismissable">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>  ..{{ Session::get('message') }}..</strong>
+        </div>
+      @endif
         <div class="flex-center position-ref full-height">
                 <div class="top-right links">
                         <a href="{{ url('/register') }}"> Register</a>

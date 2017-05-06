@@ -22,7 +22,7 @@ class UserController extends Controller
       if(Sentinel::check()){
         return redirect('/home');
       }else{
-
+        Session::flash('message', "Short name or password Wrong !");
         return redirect('/');
       }
     }

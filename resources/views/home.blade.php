@@ -71,6 +71,59 @@
                     }
                });
           }
+          function create_admin_table(data){
+            var string ="";
+            console.log(data);
+            for(i = 0; i < data.length; i++)
+            {
+                  string +=
+                    `
+                      <tr>
+                        <td style="width:10%" id="id">`+data[i].id+`</td>
+                        <td style="width:10%" id="course_id">`+data[i].course_id+`</td>
+                        <td style="width:10%" id="course_name">`+data[i].course_name+`</td>
+                        <td style="width:10%"><button id="btn_remove" data-id3="`+(i+1)+`,`+data[i].course_id+`,`+data[i].course_name+`"  class="btn btn-xs btn-success"> Remove </button> </td>
+                      </tr>
+                    `;
+            }
+            string +=
+                      `
+                      </tbody>
+                    </table>
+                      `;
+            return string;
+          }
+          function fetch_admin_data()
+          {
+               var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+               $("#result_table").empty();
+               $.ajax({
+                    url:"/queryall",
+                    type:"POST",
+                    data:{_token: CSRF_TOKEN},
+                    success:function(data){
+                      var start="";
+                      start +=
+                      `
+                      <table class="table" width="70%">
+                        <thead class="thead-inverse" align="center">
+                          <tr>
+                            <th>  id         </th>
+                            <th>  Course_id   </th>
+                            <th>  Course_name </th>
+                            <th>  Remove course </th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                      `;
+                      var table_string = start + create_admin_table(data);
+                      $("#result_table").append(table_string);
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+               });
+          }
 
           $(document).on('click', '#btn_unenroll', function(){
              var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -95,7 +148,68 @@
                     }
                })
             }
+            });
+            $(document).on('click', '#btn_remove', function(){
+               var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+               $(this).hide();
+               var data = $(this).data("id3");
+               var course_array = data.split(',');
+               if(confirm("Are you sure you want to Unenroll this course?"))
+               {
+                 $.ajax({
+                      url:"/home",
+                      type:"POST",
+                      data:{_token: CSRF_TOKEN, course_id: course_array[1].toString(), course_name: course_array[2].toString() },
+                      dataType:"json",
+                      success:function(data)
+                      {
+                        console.log(data);
+                        fetch_admin_data();
+                      },
+                      error: function (data) {
+                          console.log('Error:', data);
+                          $("#status").html(data);
+                      }
+                 })
+              }
         });
+      $(document).ready(function(){
+        $('#search-box').keyup(function () {
+        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+        var key = $(this).val();
+          $.ajax({
+              type: 'POST',
+              url: '/remove',
+              data: {Key_search :key,_token:CSRF_TOKEN},
+              dataType: 'json',
+              success: function(data) {
+                  var start="";
+                  start +=
+                  `
+                  <table class="table" width="70%">
+                    <thead class="thead-inverse" align="center">
+                      <tr>
+                        <th>  id          </th>
+                        <th>  Course_id   </th>
+                        <th>  Course_name </th>
+                        <th>  Remove course </th>
+                      </tr>
+                    </thead>
+                      <tbody>
+                  `;
+              var table_string = start + create_admin_table(data);
+              $("#result_table").empty();
+              $("#status").empty();
+              $("#result_table").append(table_string);
+
+              },
+              error: function (data) {
+                  console.log('Error:', data);
+              }
+          });
+    });
+});
+
         function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
             //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
             var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
@@ -213,34 +327,59 @@
                           <meta HTTP-EQUIV="Refresh" CONTENT="0; URL=http://localhost:8000/">
                         @endif
                         <br><br>
+                        @if(Sentinel::check())
+                          @if( Sentinel::getUser()->first_name == 'Admin')
+                            <input type="text" class="form-control"  id="search-box" placeholder="Search by Course name or Couse ID" >
+                            <div id="status"> </div>
+                          @endif
+                        @endif
                 </div>
                 <div id="mySidenav" class="sidenav">
-                  <a href="Allcourses" id="ADD"> Enroll new Course</a>
+                  @if(Sentinel::check())
+                    @if( Sentinel::getUser()->first_name != 'Admin')
+                      <a href="Allcourses" id="ADD"> Enroll new Course</a>
+                    @endif
+                  @endif
                     @if(Sentinel::check())
                       @if( Sentinel::getUser()->first_name == 'Admin')
                           <a href="ImportNewCourses" id="import"> Import New Course </a>
+                          <a href="Lecturer" id="Lecturer"> See all lecturer enrollment </a>
                       @endif
                     @endif
                 </div>
 
 
           </div>
-
-          <div id="result_table">
-
-            <table class="table" width="70%">
-              <thead class="thead-inverse" align="center">
-                <tr>
-                  <th>  #         </th>
-                  <th>  Course_id   </th>
-                  <th>  Course_name </th>
-                  <th>  Unenroll      </th>
-                </tr>
-              </thead>
-                <tbody>
-              {!!$table!!}
-          </div>
-
-
+          @if(Sentinel::check())
+            @if( Sentinel::getUser()->first_name == 'Admin')
+            <div id="result_table">
+              <table class="table" width="70%">
+                <thead class="thead-inverse" align="center">
+                  <tr>
+                    <th>  id</th>
+                    <th>  Course_id   </th>
+                    <th>  Course_name </th>
+                    <th>  Remove course    </th>
+                  </tr>
+                </thead>
+                  <tbody>
+                {!!$table!!}
+            </div>
+            @else
+            <div id="result_table">
+              <table class="table" width="70%">
+                <thead class="thead-inverse" align="center">
+                  <tr>
+                    <th>  #         </th>
+                    <th>  Course_id   </th>
+                    <th>  Course_name </th>
+                    <th>  Unenroll      </th>
+                  </tr>
+                </thead>
+                  <tbody>
+                {!!$table!!}
+            </div>
+            @endif
+          @endif
     </body>
 </html>

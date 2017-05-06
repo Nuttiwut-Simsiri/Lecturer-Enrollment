@@ -59,8 +59,12 @@ h2 {
     background-color: #f44336;
 }
 #import {
-    top: 25%;
+    top: 15%;
     background-color: #0080ff;
+}
+#Lecturer {
+    top: 25%;
+    background-color: #00ff80;
 }
 a {
   font-weight: 100;

@@ -19,6 +19,10 @@ Route::get('/logout', 'UserController@logout');
 Route::get('/Allcourses', 'HomeController@render_course');
 Route::get('/test', 'HomeController@query');
 Route::get('/ImportNewCourses', 'AdminController@render_import');
+Route::get('/Lecturer', 'AdminController@render_Lecturer');
+
+
+
 
 Route::post('/ImportNewCourses', 'AdminController@insert_into_database');
 Route::post('/register', 'UserController@create_register');
@@ -27,3 +31,5 @@ Route::post('/home', 'HomeController@unenroll');
 Route::post('/Allcourses', 'HomeController@query_course');
 Route::post('/enroll', 'HomeController@enroll');
 Route::post('/query', 'HomeController@query');
+Route::post('/remove', 'HomeController@query_course');
+Route::post('/queryall', 'HomeController@queryall');

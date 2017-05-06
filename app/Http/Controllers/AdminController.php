@@ -20,6 +20,27 @@ class AdminController extends Controller
     public function render_import(){
       return view('import');
     }
+    public function render_Lecturer(){
+      $course_list = DB::table('courses_enroll')->get();
+
+      $table ="";
+      for($i = 0; $i< sizeof($course_list);$i++){
+          $user_detail = DB::table('users')->where('short_name', '=',$course_list[$i]->short_name)->get();
+          $table .= '
+          <tr>
+            <td style="width:10%" id="name">'.$user_detail[0]->first_name." ".$user_detail[0]->last_name.'</td>
+            <td style="width:10%" id="short_name">'.$course_list[$i]->short_name.'</td>
+            <td style="width:10%" id="course_id">'.$course_list[$i]->course_id.'</td>
+            <td style="width:10%" id="course_name">'.$course_list[$i]->course_name.'</td>
+          </tr>';
+      }
+      $table .=
+                '
+                </tbody>
+              </table>
+                ';
+      return View::make('lecturer')->with('table', $table);
+    }
     public function insert_into_database(Request $request){
       $file = Input::file('fileToUpload');
       $file_name = $file->getClientOriginalName();
@@ -50,10 +71,10 @@ class AdminController extends Controller
 
       $Final = unique_multidim_array($newCourseArray,'course_id');
       try{
-        DB::table('courses')->delete();
+        DB::table('courses')->truncate();
         DB::table('courses')->insert($Final);
       } catch(\Exception $e){
-          return dd($e);
+        return redirect('ImportNewCourses');
       }
       return redirect('home');
     }

@@ -1,0 +1,90 @@
+html, body {
+    background-color: #fff;
+    color: #414B56;
+    font-weight: 100;
+    font-size: 18px;
+    height: 100vh;
+    margin: 0;
+}
+.full-height {
+    height: 100vh;
+}
+.flex-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.position-ref {
+    position: relative;
+}
+
+strong {
+  color: #414B56;
+  font-weight: 200;
+  font-size: 24px;
+}
+
+.top-right {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    font-size: 16px;
+}
+.top-left {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    font-size: 20px;
+}
+.top-center {
+    position: absolute;
+    left:30%;
+    top: 20%;
+    font-size: 20px;
+}
+a {
+  font-weight: 100;
+  font-size: 24px;
+  color: #414B56;
+}
+#Project {
+  font-weight: 100;
+  font-size: 24px;
+  color: #414B56;
+  font-weight: bold;
+}
+#mySidenav a {
+    position: absolute;
+    left: -80px;
+    transition: 0.3s;
+    padding: 15px;
+    width: 150px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    border-radius: 0 5px 5px 0;
+}
+#mySidenav a:hover {
+    left: 0;
+}
+#Export {
+    top: 10%;
+    background-color: #f44336;
+}
+#result_table{
+  position: absolute;
+  left: 0px;
+  top: 150px;
+  width: 80%;
+  height: 70%;
+  overflow-y: hidden;
+  margin-left: 10%;
+
+}
+#result_table:hover {
+  overflow-y: scroll;
+  height: 70%;
+}
+#enroll {
+  margin-left: 9%;
+}
